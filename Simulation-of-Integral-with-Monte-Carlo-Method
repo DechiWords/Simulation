@@ -1,0 +1,120 @@
+'''
+This file is the code of the pages 38 - 39 of the book Simulation of Sheldon M. Ross
+'''
+
+'''
+If we need to aproximate the value of integral, where f(x) is the function of the integral, with limits 0 and 1, [0,1], then we need to
+get K random variables with uniform distribution in (0,1). 
+
+Note : In theory K -> Infinity, in reality this is imposible, then K is a number very large.
+
+Each of one K random variables has to be evaluated in f(x), i.e, if u_1, u_2, ...., u_k are random variables with uniform distribution
+in (0,1) then f(u_1), f(u_2),..., f(u_k).
+
+After that we need to get the mean of all values evaluated in f, this mean will be an approximation of the real value of the integral
+of f(x) in (0,1).
+'''
+
+#EXAMPLE
+
+'''
+If f(x) = x^2, the integral of f(x) with limites 0 and 1 is 1/3
+'''
+
+#We defined a function who works like the function f(x)
+
+def P (Number):
+	return Number**2
+
+#We get 10,000 random variables with uniform distribution in (0,1)
+
+from random import uniform
+
+R_N = []
+for i in range (10000):
+	R_N.append(uniform(0,1))
+
+#Then we apply function P in each of one elements of R_N
+
+R_S = []
+for j in range (10000):
+	R_S.append(P(R_N[j]))
+	
+#The simulate value of the integral are in S1
+
+from statistics import mean
+
+S1 = mean(R_S)
+
+'''
+Based on theory i propose this function that approximate the value of integral with limits a,b; a,b are real.
+'''
+
+def Integral_ab (f,a,b):
+  '''
+	It will be generated 10000000 random numbers with uniform distribution in (0,1)
+
+  f : function f(x)
+
+  a : Lower limit
+
+  b : Higher limit
+  '''
+  from random import uniform
+  from statistics import mean
+  Numeros_Aleatorios = []
+  for i in range (10000000):
+    Numeros_Aleatorios.append(uniform(0,1))
+  Resultado = []
+  for j in range (len(Numeros_Aleatorios)):
+    Resultado.append( (b-a)*f( a + (b-a)*Numeros_Aleatorios[j] ) )
+  return mean(Resultado)
+
+#EXAMPLE
+
+'''
+f(x) = sin(x), a = -pi, b = e.
+'''
+
+#In this case defined a function with sine function is not necessary because we have it in module math
+
+from math import sin, pi, e
+
+#The approximate value of sin(x) with a = -pi, b = e are in S2
+
+S2 = Integral_ab(sin,-pi,e)
+
+'''
+The last function i propose is a function which approximate the value of integral with limits 0 and infinity, in this case
+the integral has to be converge.
+'''
+
+def Integral_0infty (f):
+  '''
+	It will be generated 10000000 random numbers with uniform distribution in (0,1)
+
+  f : function f(x)
+  '''
+  from random import uniform
+  from statistics import mean
+  Numeros_Aleatorios = []
+  for i in range (10000000):
+    Numeros_Aleatorios.append(uniform(0,1))
+  Resultado = []
+  for j in range (len(Numeros_Aleatorios)):
+    Resultado.append( (f( (1/Numeros_Aleatorios[j]) - 1 ))/(Numeros_Aleatorios[j]**2) )
+  return mean(Resultado)
+
+#EXAMPLE
+
+'''
+f(x) = e^(-x)cos(x)
+'''
+
+def WQ (Number):
+	from math import e, cos
+	return (e**(-Number))*cos(Number)
+
+#The approximate value of f(x) are in S3
+
+S3 = Integral_0infty(WQ)
